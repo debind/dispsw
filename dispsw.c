@@ -37,12 +37,40 @@
 // DEFINES
 //******************************************************************************
 
+// --------------------------------------------------------
+// defines the different menus 0-5
+enum eMenu
+{
+	MENU0 = 0,
+	MENU1,
+	MENU2,
+	MENU3,
+	MENU4,
+	MENU5,
+	MENU6,
+	MENU7,
+	MENU8,
+	MENU9 
+};
+// --------------------------------------------------------
+
+// --------------------------------------------------------
+// defines the menu state: flashing or stable
+enum eMenuState
+{
+	MENU_STABLE = 0,
+	MENU_FLASHING
+};
+// --------------------------------------------------------
 
 // --------------------------------------------------------
 // defines the directions of the encoder and the switch
 #define dispsw_ENC_FOREWARD(x)       ((x) & DISPSW_ENCODER_FOREWARD)
 #define dispsw_ENC_BACKWARD(x)       ((x) & DISPSW_ENCODER_BACKWARD)
 // --------------------------------------------------------
+
+#define MAX_MENU        9
+#define MAX_MENU_VALUE 99
 
 // --------------------------------------------------------
 // states for the encoder statemchine
@@ -89,18 +117,24 @@ typedef struct sDispswCmdtag
 //******************************************************************************
 // static/local functions
 //******************************************************************************
-static  void  dispsw_configIO       (void);
-static void*  dispsw_thread_Display (void* text);
-static  void  dispsw_SetZ0toZ3     (UINT8 u8Z0, UINT8 u8Z1, UINT8 u8Z2, UINT8 u8Z3);
-static  void  dispsw_latch         (UINT8 u8Value);
-static  void  dispsw_SetZ0toZ3     (UINT8 u8Z0, UINT8 u8Z1, UINT8 u8Z2, UINT8 u8Z3);
-static  void  dispsw_SetBCD        (UINT8 u8A, UINT8 u8B, UINT8 u8C, UINT8 u8D);
-static  UINT8 dispsw_u8EncProc      (void);
+static  void  dispsw_configIO          (void);
+static  void* dispsw_thread_Display    (void* text);
+static  void  dispsw_SetZ0toZ3         (UINT8 u8Z0, UINT8 u8Z1, UINT8 u8Z2, UINT8 u8Z3);
+static  void  dispsw_latch             (UINT8 u8Value);
+static  void  dispsw_SetZ0toZ3         (UINT8 u8Z0, UINT8 u8Z1, UINT8 u8Z2, UINT8 u8Z3);
+static  void  dispsw_SetBCD            (UINT8 u8A, UINT8 u8B, UINT8 u8C, UINT8 u8D);
+static  UINT8 dispsw_u8EncProc         (void);
+
+static  void  dispsw_UpdateMenuStable  (UINT8* pu8MenuState, UINT8* pu8Menu, UINT8 u8Encoder);
+static  void  dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, UINT8 u8Encoder);
 
 //******************************************************************************
 // global variables
 //******************************************************************************
-SDISPSWCMD  dispsw_sMainDispCmd;
+
+// --------------------------------------------------------
+// used for the display and the encoder / switch
+SDISPSWCMD  dispsw_sMainDispCmd = {0};
 int*        dispsw_piStatus;
 pthread_t   dispsw_threadDisplay;
 UINT8       dispsw_u8EncoderState = dispsw_ENC_IDLE;
@@ -108,6 +142,30 @@ UINT8       dispsw_u8SwitchD1 = 0;
 UINT8       dispsw_u8Encoder  = 0;
 INT32       dispsw_i32EncoderValue;
 INT32       dispsw_i32EncoderValueOld;
+// --------------------------------------------------------
+
+// ---------------------------------------------------------
+// these are the different menu values
+UINT8 u8Menu0Value = 0;
+UINT8 u8Menu1Value = 0;
+UINT8 u8Menu2Value = 0;
+UINT8 u8Menu3Value = 0;
+UINT8 u8Menu4Value = 0;
+UINT8 u8Menu5Value = 0;
+UINT8 u8Menu6Value = 0;
+UINT8 u8Menu7Value = 0;
+UINT8 u8Menu8Value = 0;
+UINT8 u8Menu9Value = 0;
+// ---------------------------------------------------------
+
+
+// --------------------------------------------------------
+// used for the menu
+UINT8 u8Menu        = MENU0;
+UINT8 u8MenuState   = MENU_STABLE;
+// --------------------------------------------------------
+
+
 
 //******************************************************************************
 // thread updating the display cyclically
@@ -288,16 +346,7 @@ void dispsw_Start(void)
 	// --------------------------------------------------------
 
 	// --------------------------------------------------------
-	// setup startup display
-	dispsw_sMainDispCmd.aFlash[0]   = 0;
-	dispsw_sMainDispCmd.aFlash[1]   = 0;
-	dispsw_sMainDispCmd.aFlash[2]   = 0;
-	dispsw_sMainDispCmd.aFlash[3]   = 0;
-	dispsw_sMainDispCmd.aZiffern[0] = 0;
-	dispsw_sMainDispCmd.aZiffern[1] = 0;
-	dispsw_sMainDispCmd.aZiffern[2] = 0;
-	dispsw_sMainDispCmd.aZiffern[3] = 0;
-	dispsw_sMainDispCmd.iDispCmd    = 0;
+	// update the display
 	dispsw_sMainDispCmd.iDispTrg    = 1;
 	// --------------------------------------------------------
 
@@ -430,3 +479,135 @@ static UINT8 dispsw_u8EncProc(void)
 
 	return u8Action ;
 }
+
+
+//******************************************************************************
+// Update the encoder statemachine
+//******************************************************************************
+void dispsw_MenuUpdate(void)
+{
+	UINT8 u8Encoder;
+
+	//-----------------------------------
+	// get new encoder values
+	u8Encoder = dispsw_GetEncoder();
+	//-----------------------------------
+
+	//-----------------------------------
+	// Menu statemachine
+	switch(u8Menu)
+	{
+		//-----------------------------------
+		// Menu0
+		case MENU0:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu0Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu0Value%100)/10,u8Menu0Value%10);
+			break;
+		//-----------------------------------
+		// Menu1
+		case MENU1:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu1Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu1Value%100)/10,u8Menu1Value%10);
+			break;
+		//-----------------------------------
+		// Menu2
+		case MENU2:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu2Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu2Value%100)/10,u8Menu2Value%10);
+			break;
+		//-----------------------------------
+		// Menu3
+		case MENU3:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu3Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu3Value%100)/10,u8Menu3Value%10);
+			break;
+		//-----------------------------------
+		// Menu4
+		case MENU4:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu4Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu4Value%100)/10,u8Menu4Value%10);
+			break;
+		//-----------------------------------
+		// Menu5
+		case MENU5:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu5Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu5Value%100)/10,u8Menu5Value%10);
+			break;
+		//-----------------------------------
+		// Menu6
+		case MENU6:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu6Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu6Value%100)/10,u8Menu6Value%10);
+			break;
+		//-----------------------------------
+		// Menu7
+		case MENU7:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu7Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu7Value%100)/10,u8Menu7Value%10);
+			break;
+		//-----------------------------------
+		// Menu8
+		case MENU8:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu8Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu8Value%100)/10,u8Menu8Value%10);
+			break;
+		//-----------------------------------
+		// Menu9
+		case MENU9:
+			if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+			else                            dispsw_UpdateMenuFlashing(&u8MenuState, &u8Menu9Value, u8Encoder);
+			dispsw_Set(u8Menu,15,(u8Menu9Value%100)/10,u8Menu9Value%10);
+			break;
+		default:
+			break;
+	}
+}
+
+//******************************************************************************
+// Updates the menu when in STABLE-MODE
+//******************************************************************************
+static void dispsw_UpdateMenuStable(UINT8* pu8MenuState, UINT8* pu8Menu, UINT8 u8Encoder)
+{
+	if      (dispsw_GetSwitch())
+	{
+		u8MenuState = MENU_FLASHING;
+		dispsw_Flashing(0,0,1,1);
+	}
+	else if (u8Encoder == DISPSW_ENCODER_FOREWARD) *pu8Menu = *pu8Menu + 1;
+	else if (u8Encoder == DISPSW_ENCODER_BACKWARD) *pu8Menu = *pu8Menu - 1;
+
+	if      (*pu8Menu > MAX_MENU_VALUE) *pu8Menu = 0;
+	else if (*pu8Menu > MAX_MENU      )  *pu8Menu = MAX_MENU;
+}
+
+//******************************************************************************
+// Updates the menu when in FLASHING-MODE
+//******************************************************************************
+static void dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, UINT8 u8Encoder)
+{
+	if      (dispsw_GetSwitch())     
+	{
+		*pu8MenuState = MENU_STABLE;	
+		dispsw_Flashing(0,0,0,0);
+	}
+	else if (u8Encoder == DISPSW_ENCODER_FOREWARD)
+	{
+		(*pu8MenuValue)++;
+		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = 0;
+	}
+	else if (u8Encoder == DISPSW_ENCODER_BACKWARD)
+	{
+		(*pu8MenuValue)--;
+		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = MAX_MENU_VALUE;
+	} 
+}
+

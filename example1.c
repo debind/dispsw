@@ -27,7 +27,6 @@ int main()
 
 	while(1)
 	{
-
 		//--------------------------------------
 		// Get the state of the encoder and evaluate
 		u8Encoder  = dispsw_GetEncoder();
@@ -51,11 +50,14 @@ int main()
 		//--------------------------------------
 		// repeat everything after 30ms.
 		usleep(30000);
-		//--------------------------------------
-	
+		//--------------------------------------	
 	}
 
+	//--------------------------------------
+	// stop the display from working. 
+	// release CPU power.
 	dispsw_Stop();
+	//--------------------------------------
 
 	return 0;
 }
