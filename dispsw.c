@@ -165,6 +165,10 @@ UINT8 u8Menu        = MENU0;
 UINT8 u8MenuState   = MENU_STABLE;
 // --------------------------------------------------------
 
+// --------------------------------------------------------
+// track the instance 
+UINT8 dispsw_u8Instance = 0;
+// --------------------------------------------------------
 
 
 //******************************************************************************
@@ -339,6 +343,10 @@ void dispsw_Flashing(unsigned char flash1, unsigned char flash2, unsigned char f
 void dispsw_Start(void)
 {
 	if (wiringPiSetup() == -1) return;
+
+	if (dispsw_u8Instance == 1) return;
+
+	dispsw_u8Instance++;
 
 	// --------------------------------------------------------
 	// configure the gpios for use
@@ -610,4 +618,20 @@ static void dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, 
 		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = MAX_MENU_VALUE;
 	} 
 }
+
+
+//******************************************************************************
+// return the menu values
+//******************************************************************************
+UINT8 dispsw_u8GetMenu0Value(void) {return u8Menu0Value;}
+UINT8 dispsw_u8GetMenu1Value(void) {return u8Menu1Value;}
+UINT8 dispsw_u8GetMenu2Value(void) {return u8Menu2Value;}
+UINT8 dispsw_u8GetMenu3Value(void) {return u8Menu3Value;}
+UINT8 dispsw_u8GetMenu4Value(void) {return u8Menu4Value;}
+UINT8 dispsw_u8GetMenu5Value(void) {return u8Menu5Value;}
+UINT8 dispsw_u8GetMenu6Value(void) {return u8Menu6Value;}
+UINT8 dispsw_u8GetMenu7Value(void) {return u8Menu7Value;}
+UINT8 dispsw_u8GetMenu8Value(void) {return u8Menu8Value;}
+UINT8 dispsw_u8GetMenu9Value(void) {return u8Menu9Value;}
+
 

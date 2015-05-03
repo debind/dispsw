@@ -109,23 +109,22 @@ extern UINT8 dispsw_GetSwitch(void);
 
 // ---------------------------------------------------------
 // Implements a 10 stage Menu
-void dispsw_MenuUpdate(void);
+extern void dispsw_MenuUpdate(void);
 // ---------------------------------------------------------
 
 
 // ---------------------------------------------------------
 // these are the different menu values
-extern UINT8 u8Menu0Value;
-extern UINT8 u8Menu1Value;
-extern UINT8 u8Menu2Value;
-extern UINT8 u8Menu3Value;
-extern UINT8 u8Menu4Value;
-extern UINT8 u8Menu5Value;
-extern UINT8 u8Menu6Value;
-extern UINT8 u8Menu7Value;
-extern UINT8 u8Menu8Value;
-extern UINT8 u8Menu9Value;
-extern UINT8 u8Menu10Value;
+extern UINT8 dispsw_u8GetMenu0Value(void);
+extern UINT8 dispsw_u8GetMenu1Value(void);
+extern UINT8 dispsw_u8GetMenu2Value(void);
+extern UINT8 dispsw_u8GetMenu3Value(void);
+extern UINT8 dispsw_u8GetMenu4Value(void);
+extern UINT8 dispsw_u8GetMenu5Value(void);
+extern UINT8 dispsw_u8GetMenu6Value(void);
+extern UINT8 dispsw_u8GetMenu7Value(void);
+extern UINT8 dispsw_u8GetMenu8Value(void);
+extern UINT8 dispsw_u8GetMenu9Value(void);
 // ---------------------------------------------------------
 
 
