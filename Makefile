@@ -49,7 +49,7 @@ all:		$(DYNAMIC)
 
 $(DYNAMIC):	$(OBJ)
 	@echo "[Link (Dynamic)]"
-	@$(CC) -shared -Wl,-soname,libdispsw.so -o libdispsw.so.$(VERSION) -lpthread $(OBJ) 
+	@$(CC) -shared -Wl,-soname,libdispsw.so -o libdispsw.so.$(VERSION) -lpthread -lwiringPi $(OBJ)
 
 .c.o:
 	@echo [Compile] $<
