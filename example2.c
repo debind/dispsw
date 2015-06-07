@@ -11,6 +11,7 @@
 int main() 
 {
 	UINT8 u8Flash=0;
+	UINT8 u8MenuState = DISPSW_MENU_STABLE;
 	UINT8 u8MenuNumber;
 	UINT8 u8Encoder;
 	UINT8 au8MenuValues[100]= {0};

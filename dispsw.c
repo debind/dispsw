@@ -54,14 +54,6 @@ enum eMenu
 };
 // --------------------------------------------------------
 
-// --------------------------------------------------------
-// defines the menu state: flashing or stable
-enum eMenuState
-{
-	MENU_STABLE = 0,
-	MENU_FLASHING
-};
-// --------------------------------------------------------
 
 // --------------------------------------------------------
 // defines the directions of the encoder and the switch
@@ -153,7 +145,7 @@ UINT8 au8MenuValue[100]={0};
 // --------------------------------------------------------
 // used for the menu
 UINT8 u8Menu        = MENU0;
-UINT8 u8MenuState   = MENU_STABLE;
+UINT8 u8MenuState   = DISPSW_MENU_STABLE;
 // --------------------------------------------------------
 
 // --------------------------------------------------------
@@ -492,8 +484,8 @@ void dispsw_MenuUpdate(void)
 	u8Encoder = dispsw_GetEncoder();
 	//-----------------------------------
 
-	if (u8MenuState == MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
-	else                            dispsw_UpdateMenuFlashing(&u8MenuState, &au8MenuValue[u8Menu], u8Encoder);
+	if (u8MenuState == DISPSW_MENU_STABLE) dispsw_UpdateMenuStable  (&u8MenuState, &u8Menu, u8Encoder);
+	else                                  dispsw_UpdateMenuFlashing(&u8MenuState, &au8MenuValue[u8Menu], u8Encoder);
 	dispsw_Set(u8Menu/10,u8Menu%10,(au8MenuValue[u8Menu]%100)/10,au8MenuValue[u8Menu]%10);
 
 }
@@ -505,7 +497,7 @@ static void dispsw_UpdateMenuStable(UINT8* pu8MenuState, UINT8* pu8Menu, UINT8 u
 {
 	if      (dispsw_GetSwitch())
 	{
-		u8MenuState = MENU_FLASHING;
+		u8MenuState = DISPSW_MENU_FLASHING;
 		dispsw_Flashing(0,0,1,1);
 	}
 	else if (u8Encoder == DISPSW_ENCODER_FOREWARD) *pu8Menu = *pu8Menu + 1;
@@ -522,7 +514,7 @@ static void dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, 
 {
 	if      (dispsw_GetSwitch())     
 	{
-		*pu8MenuState = MENU_STABLE;	
+		*pu8MenuState = DISPSW_MENU_STABLE;	
 		dispsw_Flashing(0,0,0,0);
 	}
 	else if (u8Encoder == DISPSW_ENCODER_FOREWARD)
@@ -542,4 +534,15 @@ static void dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, 
 // return the menu values
 //******************************************************************************
 UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber) {return au8MenuValue[u8MenuNumber];}
+
+
+//******************************************************************************
+// return the active menu number
+//******************************************************************************
+UINT8 dispsw_u8GetMenu() {return u8Menu;}
+
+//******************************************************************************
+// return the menu state
+//******************************************************************************
+UINT8 dispsw_u8GetMenuState() {return u8MenuState;}
 

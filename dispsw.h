@@ -34,6 +34,15 @@ typedef short          INT16;
 typedef unsigned short UINT16;
 // ---------------------------------------------------------
 
+// --------------------------------------------------------
+// defines the menu state: flashing or stable
+enum dispsw_eMenuState
+{
+	DISPSW_MENU_STABLE = 0,
+	DISPSW_MENU_FLASHING
+};
+// --------------------------------------------------------
+
 // ---------------------------------------------------------
 // defines the encoder actions
 #define DISPSW_ENCODER_FOREWARD 0x01
@@ -105,5 +114,14 @@ extern void dispsw_MenuUpdate(void);
 extern UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber);
 // ---------------------------------------------------------
 
+// ---------------------------------------------------------
+// returns the active menu number
+extern UINT8 dispsw_u8GetMenu();
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+// returns the active menu state: MENU_STABLE or MENU_FLASHING
+extern UINT8 dispsw_u8GetMenuState();
+// ---------------------------------------------------------
 
 #endif
