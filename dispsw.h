@@ -41,19 +41,6 @@ typedef unsigned short UINT16;
 #define dispsw_ENCODER_NOTHING  0
 // ---------------------------------------------------------
 
-// ---------------------------------------------------------
-// defines the different menu values
-#define DISPSW_GET_MENU0_VALUE   u8Menu0Value
-#define DISPSW_GET_MENU1_VALUE   u8Menu1Value
-#define DISPSW_GET_MENU2_VALUE   u8Menu2Value
-#define DISPSW_GET_MENU3_VALUE   u8Menu3Value
-#define DISPSW_GET_MENU4_VALUE   u8Menu4Value
-#define DISPSW_GET_MENU5_VALUE   u8Menu5Value
-#define DISPSW_GET_MENU6_VALUE   u8Menu6Value
-#define DISPSW_GET_MENU7_VALUE   u8Menu7Value
-#define DISPSW_GET_MENU8_VALUE   u8Menu8Value
-#define DISPSW_GET_MENU9_VALUE   u8Menu9Value
-#define DISPSW_GET_MENU10_VALUE  u8Menu10Value
 
 // ---------------------------------------------------------
 // defines the thread refresh rate [ms]
@@ -114,17 +101,8 @@ extern void dispsw_MenuUpdate(void);
 
 
 // ---------------------------------------------------------
-// these are the different menu values
-extern UINT8 dispsw_u8GetMenu0Value(void);
-extern UINT8 dispsw_u8GetMenu1Value(void);
-extern UINT8 dispsw_u8GetMenu2Value(void);
-extern UINT8 dispsw_u8GetMenu3Value(void);
-extern UINT8 dispsw_u8GetMenu4Value(void);
-extern UINT8 dispsw_u8GetMenu5Value(void);
-extern UINT8 dispsw_u8GetMenu6Value(void);
-extern UINT8 dispsw_u8GetMenu7Value(void);
-extern UINT8 dispsw_u8GetMenu8Value(void);
-extern UINT8 dispsw_u8GetMenu9Value(void);
+// returns the different menu values
+extern UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber);
 // ---------------------------------------------------------
 
 
