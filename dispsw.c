@@ -520,12 +520,12 @@ static void dispsw_UpdateMenuFlashing(UINT8* pu8MenuState, UINT8* pu8MenuValue, 
 	else if (u8Encoder == DISPSW_ENCODER_FOREWARD)
 	{
 		(*pu8MenuValue)++;
-		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = 0;
+		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = MAX_MENU;
 	}
 	else if (u8Encoder == DISPSW_ENCODER_BACKWARD)
 	{
 		(*pu8MenuValue)--;
-		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = MAX_MENU_VALUE;
+		if (*pu8MenuValue > MAX_MENU_VALUE) *pu8MenuValue = 0;
 	} 
 }
 

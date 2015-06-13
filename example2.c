@@ -10,10 +10,8 @@
 //******************************************************************************
 int main() 
 {
-	UINT8 u8Flash=0;
-	UINT8 u8MenuState = DISPSW_MENU_STABLE;
-	UINT8 u8MenuNumber;
-	UINT8 u8Encoder;
+	UINT8 u8MenuStatus = DISPSW_MENU_STABLE;
+	UINT8 u8MenuNumber = 0;
 	UINT8 au8MenuValues[100]= {0};
 
 	//--------------------------------------
@@ -30,11 +28,15 @@ int main()
 		dispsw_MenuUpdate();
 		//--------------------------------------
 
-		//--------------------------------------
-		// if menu content changed just print out.
-		for (u8MenuNumber = 0; u8MenuNumber < 100; u8MenuNumber++)
+		if (u8MenuNumber != dispsw_u8GetMenu())
 		{
-			if (au8MenuValues[u8MenuNumber]  != dispsw_u8GetMenuValue(u8MenuNumber)) printf("Value%02d  now %d\n",u8MenuNumber, dispsw_u8GetMenuValue(u8MenuNumber));
+			u8MenuNumber = dispsw_u8GetMenu();
+			printf("menu now %d\n",u8MenuNumber);
+		}
+
+		if (au8MenuValues[u8MenuNumber] != dispsw_u8GetMenuValue(u8MenuNumber))
+		{
+			printf("Value%02d  now %d\n",u8MenuNumber, dispsw_u8GetMenuValue(u8MenuNumber));
 
 			//--------------------------------------
 			// update out working variables.
@@ -42,7 +44,19 @@ int main()
 			//--------------------------------------
 		}
 
-		//--------------------------------------
+		if ((u8MenuStatus == DISPSW_MENU_STABLE) && (dispsw_u8GetMenuState() == DISPSW_MENU_FLASHING))
+		{
+	    	u8MenuStatus = dispsw_u8GetMenuState();
+			printf(" entered flashing\n");
+		}
+
+		if ((u8MenuStatus == DISPSW_MENU_FLASHING) && (dispsw_u8GetMenuState() == DISPSW_MENU_STABLE))
+		{
+	    	u8MenuStatus = dispsw_u8GetMenuState();
+			printf(" released flashing\n");
+		}
+
+			//--------------------------------------
 		// repeat everything after 3ms.
 		usleep(3000);
 		//--------------------------------------	
