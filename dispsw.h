@@ -108,10 +108,14 @@ extern UINT8 dispsw_GetSwitch(void);
 extern void dispsw_MenuUpdate(void);
 // ---------------------------------------------------------
 
-
 // ---------------------------------------------------------
 // returns the different menu values
 extern UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber);
+// ---------------------------------------------------------
+
+// ---------------------------------------------------------
+// sets the different menu values
+extern void u8SetMenuValue(UINT8 u8MenuNumber, UINT8 u8Value) ;
 // ---------------------------------------------------------
 
 // ---------------------------------------------------------
