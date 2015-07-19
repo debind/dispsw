@@ -538,7 +538,7 @@ UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber) {return au8MenuValue[u8MenuNumbe
 //******************************************************************************
 // set the menu values
 //******************************************************************************
-void dispsw_u8SetMenuValue(UINT8 u8MenuNumber, UINT8 u8Value) 
+void dispsw_vSetMenuValue(UINT8 u8MenuNumber, UINT8 u8Value) 
 {
 	if (u8MenuNumber > 99) return;
 	au8MenuValue[u8MenuNumber] = u8Value;

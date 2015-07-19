@@ -115,7 +115,7 @@ extern UINT8 dispsw_u8GetMenuValue(UINT8 u8MenuNumber);
 
 // ---------------------------------------------------------
 // sets the different menu values
-extern void u8SetMenuValue(UINT8 u8MenuNumber, UINT8 u8Value) ;
+extern void dispsw_vSetMenuValue(UINT8 u8MenuNumber, UINT8 u8Value) ;
 // ---------------------------------------------------------
 
 // ---------------------------------------------------------
